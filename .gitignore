@@ -9,3 +9,4 @@ ios/
 app/e2e/results/artifacts/
 *.log
 .DS_Store
+.claude/

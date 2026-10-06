@@ -1,0 +1,12 @@
+import { openDb } from './db.js';
+import { seed, DEMO_PASSWORD } from './seed.js';
+import fs from 'node:fs';
+const file = process.env.DB_FILE || new URL('../gedara.db', import.meta.url).pathname;
+for (const f of [file, file + '-wal', file + '-shm']) if (fs.existsSync(f)) fs.unlinkSync(f);
+const db = openDb(file);
+seed(db);
+console.log(`Database created at ${file}`);
+console.log('Demo accounts (password for all: ' + DEMO_PASSWORD + '):');
+console.log('  customer  dilani@gedara.lk');
+console.log('  provider  nimal@gedara.lk');
+console.log('  admin     ruwan@gedara.lk');

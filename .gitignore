@@ -1,0 +1,11 @@
+node_modules/
+dist/
+android/
+ios/
+.expo/
+*.db
+*.db-wal
+*.db-shm
+app/e2e/results/artifacts/
+*.log
+.DS_Store

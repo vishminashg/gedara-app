@@ -1,0 +1,123 @@
+{
+  "_about": "Template for the Milestone 03 report generator. Arrays are empty on purpose: real rows come from export_workbook_to_json.py (or are typed by hand) after real sessions. Keys that start with an underscore are documentation and must be ignored by readers. Never fill this file with invented data.",
+  "_row_templates": {
+    "participants[]": {
+      "code": null,
+      "background": null,
+      "roles_tested": null,
+      "age_group": null,
+      "device": null,
+      "connection": null,
+      "session_date": null,
+      "consent": null,
+      "recorded": null,
+      "recording_file": null
+    },
+    "tasks[].results[]": {
+      "participant": null,
+      "success": null,
+      "time_s": null,
+      "errors": null,
+      "seq": null,
+      "hints": null,
+      "note": null
+    },
+    "sus[]": {
+      "participant": null,
+      "items": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    "issues[]": {
+      "id": null,
+      "interface": null,
+      "issue": null,
+      "severity": null,
+      "fix": null,
+      "status": null,
+      "task": null,
+      "participants_affected": null,
+      "participant_codes": null,
+      "requirement": null,
+      "found_in": null,
+      "retest_result": null
+    }
+  },
+  "_value_notes": {
+    "participant / code": "anonymous code U1, U2, ... (no names)",
+    "success": "one of Success, Partial, Fail (Success rate = Success / attempts)",
+    "time_s": "seconds, filled for Success attempts only, otherwise null",
+    "errors": "whole number >= 0 counted by the observer",
+    "seq": "whole number 1 to 7",
+    "sus.items": "ten answers 1 to 5 in statement order Q1 to Q10; score = ((Q1+Q3+Q5+Q7+Q9) - 5 + 25 - (Q2+Q4+Q6+Q8+Q10)) * 2.5",
+    "severity": "High, Medium or Low (M02 report Table 13)",
+    "status": "Open, Fixed or Won't fix",
+    "interface": "screen code and name, for example 'C5 Pick a time'",
+    "consent / recorded": "Yes or No",
+    "required fields for the generator": "participants[].code, tasks[].id, tasks[].results[].participant/success/time_s/errors/seq, sus[].participant/items, issues[].id/interface/issue/severity/fix/status. hints, note and the other issue fields are optional extras."
+  },
+  "participants": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "role": "Customer",
+      "results": []
+    },
+    {
+      "id": "T2",
+      "role": "Customer",
+      "results": []
+    },
+    {
+      "id": "T3",
+      "role": "Customer",
+      "results": []
+    },
+    {
+      "id": "T4",
+      "role": "Customer",
+      "results": []
+    },
+    {
+      "id": "T5",
+      "role": "Customer",
+      "results": []
+    },
+    {
+      "id": "T6",
+      "role": "Customer",
+      "results": []
+    },
+    {
+      "id": "T7",
+      "role": "Provider",
+      "results": []
+    },
+    {
+      "id": "T8",
+      "role": "Provider",
+      "results": []
+    },
+    {
+      "id": "T9",
+      "role": "Administrator",
+      "results": []
+    },
+    {
+      "id": "T10",
+      "role": "Administrator",
+      "results": []
+    }
+  ],
+  "sus": [],
+  "issues": []
+}

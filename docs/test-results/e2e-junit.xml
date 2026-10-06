@@ -1,0 +1,62 @@
+<testsuites id="" name="" tests="29" failures="0" skipped="0" errors="0" time="32.890781000000004">
+<testsuite name="gedara.spec.js" timestamp="2026-10-05T23:59:04.853Z" hostname="" tests="29" failures="0" skipped="0" time="30.73" errors="0">
+<testcase name="UI-01 | FR1 FR12 | Customer signs in with a demo account and sees the home screen" classname="gedara.spec.js" time="0.74">
+</testcase>
+<testcase name="UI-02 | NFR4 NFR6 | Wrong password and empty fields are rejected with a clear message" classname="gedara.spec.js" time="0.58">
+</testcase>
+<testcase name="UI-03 | FR1 | Searching &quot;leaking tap&quot; lists plumbers only, best rated first" classname="gedara.spec.js" time="0.624">
+</testcase>
+<testcase name="UI-04 | FR2 FR4 | &quot;Verified only&quot; removes providers whose documents are not checked" classname="gedara.spec.js" time="0.695">
+</testcase>
+<testcase name="UI-05 | FR2 FR3 FR4 NFR4 | Profile shows verification, price estimates, availability and reviews" classname="gedara.spec.js" time="0.74">
+</testcase>
+<testcase name="UI-06 | FR3 FR5 NFR2 | An empty problem description is blocked with a message next to the field" classname="gedara.spec.js" time="0.777">
+</testcase>
+<testcase name="UI-07 | FR3 FR4 FR13 NFR3 NFR5 | Customer books a provider; request is pending and the provider phone stays locked" classname="gedara.spec.js" time="1.085">
+</testcase>
+<testcase name="UI-08 | FR4 NFR5 | A slot that is already booked cannot be picked" classname="gedara.spec.js" time="0.94">
+</testcase>
+<testcase name="UI-09 | FR7 NFR3 | Customer and provider exchange a chat message" classname="gedara.spec.js" time="2.371">
+</testcase>
+<testcase name="UI-10 | FR6 FR8 NFR3 | Provider sees address and phone only after accepting" classname="gedara.spec.js" time="0.759">
+</testcase>
+<testcase name="UI-11 | FR6 FR7 FR8 | After the provider accepts, the customer sees Accepted, the price and the provider phone" classname="gedara.spec.js" time="1.944">
+</testcase>
+<testcase name="UI-12 | FR6 FR13 | Provider completes a job with a final price and it appears in History" classname="gedara.spec.js" time="1.208">
+</testcase>
+<testcase name="UI-13 | FR4 FR6 NFR5 | A slot the provider blocks cannot be booked by a customer" classname="gedara.spec.js" time="1.487">
+</testcase>
+<testcase name="UI-14 | FR10 NFR6 | Customer rates a completed job" classname="gedara.spec.js" time="0.949">
+</testcase>
+<testcase name="UI-15 | FR10 FR3 NFR6 | Customer reports a problem and gets a case reference" classname="gedara.spec.js" time="0.899">
+</testcase>
+<testcase name="UI-16 | FR9 | Provider edits the profile and the change is saved" classname="gedara.spec.js" time="1.053">
+</testcase>
+<testcase name="UI-17 | FR9 NFR4 | Admin cannot approve until all four checks are ticked, then the provider is verified" classname="gedara.spec.js" time="0.917">
+</testcase>
+<testcase name="UI-18 | FR3 FR10 NFR6 | Admin contacts both sides, then resolves a complaint with an outcome" classname="gedara.spec.js" time="0.755">
+</testcase>
+<testcase name="UI-19 | FR11 | Admin dashboard shows the counts and switches between 7 and 30 days" classname="gedara.spec.js" time="0.669">
+</testcase>
+<testcase name="UI-20 | FR12 NFR6 | A new customer registers, lands on Home and can sign out" classname="gedara.spec.js" time="0.638">
+</testcase>
+<testcase name="UI-21 | FR12 NFR4 | Registering with an email that is already used shows an error" classname="gedara.spec.js" time="0.568">
+</testcase>
+<testcase name="UI-22 | FR12 | &quot;Book again&quot; on Home opens the job form for the same provider" classname="gedara.spec.js" time="0.617">
+</testcase>
+<testcase name="UI-23 | FR7 NFR5 | Cancelling a pending request releases the slot" classname="gedara.spec.js" time="1.892">
+</testcase>
+<testcase name="UI-24 | FR8 | Notifications: provider is told about a new request and can mark it read" classname="gedara.spec.js" time="1.852">
+</testcase>
+<testcase name="UI-25 | FR1 FR2 | Customer saves a provider from the results list and finds it under favourites on Home" classname="gedara.spec.js" time="0.793">
+</testcase>
+<testcase name="UI-26 | FR7 NFR3 | Customer deletes a message they sent" classname="gedara.spec.js" time="1.448">
+</testcase>
+<testcase name="UI-27 | FR5 FR12 | A booking left unsent is kept as a draft that can be deleted" classname="gedara.spec.js" time="1.457">
+</testcase>
+<testcase name="UI-28 | FR5 NFR2 | A draft can be continued and sent" classname="gedara.spec.js" time="1.449">
+</testcase>
+<testcase name="UI-29 | NFR1 FR9 | Admin on a wide screen shows a side menu and a list beside the detail" classname="gedara.spec.js" time="0.824">
+</testcase>
+</testsuite>
+</testsuites>

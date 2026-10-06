@@ -1,9 +1,10 @@
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import { openDb } from './db.js';
 import { seed } from './seed.js';
 import { createApp } from './app.js';
 
-const file = process.env.DB_FILE || new URL('../gedara.db', import.meta.url).pathname;
+const file = process.env.DB_FILE || fileURLToPath(new URL('../gedara.db', import.meta.url));
 const fresh = !fs.existsSync(file);
 const db = openDb(file);
 if (fresh) { seed(db); console.log('Created and seeded a new database.'); }

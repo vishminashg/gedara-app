@@ -1,7 +1,8 @@
+import { fileURLToPath } from 'node:url';
 import { openDb } from './db.js';
 import { seed, DEMO_PASSWORD } from './seed.js';
 import fs from 'node:fs';
-const file = process.env.DB_FILE || new URL('../gedara.db', import.meta.url).pathname;
+const file = process.env.DB_FILE || fileURLToPath(new URL('../gedara.db', import.meta.url));
 for (const f of [file, file + '-wal', file + '-shm']) if (fs.existsSync(f)) fs.unlinkSync(f);
 const db = openDb(file);
 seed(db);

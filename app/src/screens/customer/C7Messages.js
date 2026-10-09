@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { api } from '../../api';
 import { useSession } from '../../session';
+import { useT } from '../../i18n';
 import { useLoad, useAction } from '../../hooks';
 import { Screen, Header, BrandBar, Card, Row, T, Chip, Chips, Note, Avatar, Pill, Async, Empty, Btn, Icon, ErrorBox } from '../../ui';
 import { C, F } from '../../theme';
@@ -38,6 +39,7 @@ const QUICK = { customer: ['I will be home after 3 pm', 'Is parking available?']
 export function Chat({ route }) {
   const { bookingId, title } = route.params;
   const { user } = useSession();
+  const t = useT();
   const [msgs, setMsgs] = useState(null);
   const [error, setError] = useState('');
   const [text, setText] = useState('');
@@ -51,9 +53,9 @@ export function Chat({ route }) {
   useEffect(() => { if (msgs?.length) setTimeout(() => list.current?.scrollToEnd({ animated: false }), 50); }, [msgs?.length]);
 
   const send = (body) => {
-    const t = (body ?? text).trim();
-    if (!t) return;
-    return run(async () => { await api.post(`/bookings/${bookingId}/messages`, { body: t }); setText(''); await load(); });
+    const msg = (body ?? text).trim();
+    if (!msg) return;
+    return run(async () => { await api.post(`/bookings/${bookingId}/messages`, { body: msg }); setText(''); await load(); });
   };
   const remove = (id) => run(async () => { await api.del('/messages/' + id); await load(); });
   const fmt = (s) => (s || '').slice(11, 16);
@@ -72,7 +74,7 @@ export function Chat({ route }) {
                 <T style={{ color: me ? '#fff' : C.text, fontSize: 14 }}>{m.body}</T>
                 <T small style={{ color: me ? 'rgba(255,255,255,.75)' : C.muted, fontSize: 11 }}>{me ? 'You' : m.sender.split(' ')[0]} · {fmt(m.createdAt)}</T>
                 {me ? (
-                  <Pressable accessibilityRole="button" accessibilityLabel="Delete message" testID={'del-msg-' + m.id} onPress={() => remove(m.id)} style={{ minHeight: 44, justifyContent: 'center' }}>
+                  <Pressable accessibilityRole="button" accessibilityLabel={t('Delete message')} testID={'del-msg-' + m.id} onPress={() => remove(m.id)} style={{ minHeight: 44, justifyContent: 'center' }}>
                     <T small b style={{ color: 'rgba(255,255,255,.9)', fontSize: 11.5 }}>Delete</T>
                   </Pressable>
                 ) : null}
@@ -82,11 +84,11 @@ export function Chat({ route }) {
       )}
       {sendErr ? <View style={{ paddingHorizontal: 16 }}><Note tone="bad" icon="alert-triangle">{sendErr}</Note></View> : null}
       <View style={{ paddingHorizontal: 12, paddingBottom: 6 }}>
-        <Chips>{QUICK[user.role === 'provider' ? 'provider' : 'customer'].map((q) => <Chip key={q} label={q} onPress={() => send(q)} />)}</Chips>
+        <Chips>{QUICK[user.role === 'provider' ? 'provider' : 'customer'].map((q) => <Chip key={q} label={q} onPress={() => send(t(q))} />)}</Chips>
       </View>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <Row style={{ padding: 10, borderTopWidth: 1, borderTopColor: C.line, backgroundColor: C.card, alignItems: 'center' }}>
-          <TextInput value={text} onChangeText={setText} placeholder="Write a message" accessibilityLabel="Message" testID="chat-input" onSubmitEditing={() => send()}
+          <TextInput value={text} onChangeText={setText} placeholder={t('Write a message')} accessibilityLabel={t('Message')} testID="chat-input" onSubmitEditing={() => send()}
             placeholderTextColor="#8a9896" style={{ flex: 1, minHeight: 44, borderWidth: 1, borderColor: C.line, borderRadius: 22, paddingHorizontal: 14, backgroundColor: C.bg, fontFamily: F.ui, fontSize: 14.5 }} />
           <Btn label="Send" icon="send" onPress={() => send()} busy={busy} disabled={!text.trim()} style={{ paddingHorizontal: 14, borderRadius: 22 }} testID="chat-send" />
         </Row>

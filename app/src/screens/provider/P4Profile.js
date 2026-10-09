@@ -5,7 +5,7 @@ import { api } from '../../api';
 import { pickPhoto } from '../../photos';
 import { useSession } from '../../session';
 import { useLoad, useAction, useToast } from '../../hooks';
-import { Screen, Header, Card, Row, T, Btn, Pill, Note, Field, KV, Section, Avatar, VerPill, Async, Sheet, Chip, Chips, Toast } from '../../ui';
+import { Screen, Header, Card, Row, T, Btn, Pill, Note, Field, KV, Section, Avatar, VerPill, Async, Sheet, Chip, Chips, Toast, LangPicker } from '../../ui';
 import { C, TRADES } from '../../theme';
 
 const DOC_TYPES = ['National ID', 'Trade certificate', 'Police report', 'Other'];
@@ -79,6 +79,7 @@ export default function Profile() {
             </Section>
             {p.status === 'rejected' ? <Note tone="bad" icon="alert-triangle">Your application was not approved. Check your notifications for the reason, then upload new documents.</Note>
               : !p.verified ? <Note icon="shield">Your profile stays hidden from customers until an administrator approves your documents.</Note> : <Note icon="check">You are verified and visible to customers.</Note>}
+            <Section title="Language"><LangPicker /></Section>
             <Btn kind="secondary" label="Sign out" onPress={() => signOut()} testID="signout" />
           </>
         )}</Async>

@@ -478,3 +478,32 @@ tc('TC-68', 'NFR5 FR4', 'A time slot that has already started today is not offer
     assert.equal(slotPassed(tomorrow, 0, noon), false); // other days are never "past"
   } finally { process.env.HIDE_PAST_SLOTS = was; }
 });
+
+/* ============ Usability finding UT-03: block one date only ============ */
+tc('TC-69', 'FR4 FR6 NFR5', 'A one-off date block (Create, Read, Delete) hides only that date, not the same weekday next week', async ({ api, ids }) => {
+  const p = await api.provider();
+  const c = await api.customer();
+  const date = isoDate(10), nextWeek = isoDate(17);
+  const made = await p.post('/api/provider/date-blocks', { date, slot: 2 });
+  assert.equal(made.status, 201);
+  assert.ok((await p.get('/api/provider/blocks')).body.dateBlocks.some(x => x.date === date && x.slot === 2));
+  const free = async (d) => {
+    const days = (await c.get(`/api/providers/${ids.nimal}/slots?days=28`)).body;
+    const day = days.find(x => x.date === d);
+    return day ? day.slots[2].free : null;
+  };
+  assert.equal(await free(date), false);
+  assert.notEqual(await free(nextWeek), false); // the same weekday a week later stays open
+  assert.equal((await p.delete('/api/provider/date-blocks/' + made.body.id)).status, 200);
+  assert.equal(await free(date), true);
+});
+tc('TC-70', 'FR4', 'A date block is not duplicated, and a past or far-future date is rejected (400)', async ({ api }) => {
+  const p = await api.provider();
+  const date = isoDate(5);
+  await p.post('/api/provider/date-blocks', { date, slot: 1 });
+  await p.post('/api/provider/date-blocks', { date, slot: 1 });
+  assert.equal((await p.get('/api/provider/blocks')).body.dateBlocks.filter(x => x.date === date && x.slot === 1).length, 1);
+  assert.equal((await p.post('/api/provider/date-blocks', { date: isoDate(-1), slot: 1 })).status, 400);
+  assert.equal((await p.post('/api/provider/date-blocks', { date: isoDate(90), slot: 1 })).status, 400);
+  assert.equal((await p.post('/api/provider/date-blocks', { date: 'tomorrow', slot: 1 })).status, 400);
+});

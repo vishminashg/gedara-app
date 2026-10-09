@@ -94,7 +94,7 @@ TASKS = [
          success="Both cells (2 pm and 4 pm on the target day) show <b>“Blocked”</b> and no other cell was changed.",
          partial="Both blocked but also blocked or unblocked another cell, or only after a hint.",
          fail="Only one slot blocked, or none, or stuck for 60 s.",
-         watch="Blocks repeat every week (“Blocked every Fri”): do they notice or object? Tapping a blocked cell again unblocks it: count it as an error. Tapping a “Booked” or “Request” cell only shows a toast. Optional check at the end: customer login, Nimal, “Pick a time”: both slots show “Booked”."),
+         watch="The default is “This date only”; “Every week” repeats it (“Blocked every Fri”): do they notice the choice? Tapping a blocked cell again unblocks it: count it as an error. Tapping a “Booked” or “Request” cell only shows a toast. Optional check at the end: customer login, Nimal, “Pick a time”: both slots show “Booked”."),
     dict(id="T9", role="Administrator", login="ruwan@gedara.lk", start="“Dashboard” (the first tab)",
          title="Check documents and approve a provider",
          read="You are the administrator. Check the documents of the new plumber Saman Jayasinghe and approve him.",

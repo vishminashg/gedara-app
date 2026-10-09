@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts, Figtree_500Medium, Figtree_600SemiBold, Figtree_700Bold } from '@expo-google-fonts/figtree';
 import { BricolageGrotesque_700Bold } from '@expo-google-fonts/bricolage-grotesque';
 import { SessionProvider } from './src/session';
+import { LangProvider } from './src/i18n';
 import Root from './src/navigation';
 import { Loading } from './src/ui';
 
@@ -13,10 +14,12 @@ export default function App() {
   if (!loaded && !fontError) return <Loading />;
   return (
     <SafeAreaProvider>
-      <SessionProvider>
-        <StatusBar style="auto" />
-        <Root />
-      </SessionProvider>
+      <LangProvider>
+        <SessionProvider>
+          <StatusBar style="auto" />
+          <Root />
+        </SessionProvider>
+      </LangProvider>
     </SafeAreaProvider>
   );
 }

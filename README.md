@@ -17,7 +17,8 @@ The app implements the 17 interfaces of the Milestone 02 high-fidelity prototype
 | Database | SQLite (better-sqlite3, WAL mode, foreign keys on) |
 | Authentication | Email + password, bcrypt hashes, JWT bearer token (7 days) |
 | Validation | zod schemas on every request body and query |
-| Tests | 68 API tests (node:test + supertest) and 29 browser tests (Playwright) |
+| Languages | English, Sinhala (සිංහල) and Tamil (தமிழ்), switchable in the app |
+| Tests | 70 API tests (node:test + supertest) and 34 browser tests (Playwright) |
 
 ## Repository layout
 
@@ -25,11 +26,11 @@ The app implements the 17 interfaces of the Milestone 02 high-fidelity prototype
 gedara-app/
 ├─ server/            Express API + SQLite
 │  ├─ src/            app.js, db.js (schema, rules), routes-*.js, seed.js, auth.js
-│  └─ test/           api.test.js  (TC-01 … TC-68)
+│  └─ test/           api.test.js  (TC-01 … TC-70)
 ├─ app/               Expo app
 │  ├─ src/screens/    customer/ (C1–C9), provider/ (P1–P5), admin/ (A1–A3), Auth, Notifications
-│  ├─ src/            api.js, session.js, theme.js, ui.js (shared components), navigation.js
-│  └─ e2e/            gedara.spec.js (UI-01 … UI-29), static.js
+│  ├─ src/            api.js, session.js, theme.js, ui.js (shared components), navigation.js, i18n.js + lang/ (Sinhala and Tamil text)
+│  └─ e2e/            gedara.spec.js (UI-01 … UI-34), static.js
 └─ docs/
    ├─ test-results/   JUnit XML of the last full run (API and browser)
    └─ usability/      usability test kit: session script, results workbook, README
@@ -147,8 +148,9 @@ all four admin checks pass, past time slots are not offered.
 
 - Photos: the app lets the user pick up to five photos and stores the **count**, not the image files.
 - Payments are recorded (method and price per booking, provider payouts) but there is no payment gateway.
-- A blocked calendar slot repeats every week; there is no one-off block.
+- The provider calendar shows four weeks. A slot can be blocked for one date only or every week. There is no date range or all-day block yet.
 - Push notifications are in-app only.
+- Language: the whole interface (buttons, labels, messages from the server, dates and times) can be switched between English, Sinhala and Tamil with the globe button, or the language buttons on the sign-in screen. Names, the sample provider descriptions and reviews, and text that people type themselves stay as written. The Sinhala and Tamil wording was prepared with an AI tool and should be proofread by a native speaker before real use. Edit `app/src/lang/si.js` and `ta.js` to change any wording.
 - The API is meant for a local network or a small deployment; there is no rate limiting or HTTPS termination.
 
 ## Licence

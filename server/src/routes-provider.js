@@ -80,7 +80,23 @@ export function providerRoutes(db) {
     const blocks = db.prepare('SELECT id, dow, slot FROM blocks WHERE provider_id = ? ORDER BY dow, slot').all(me(req));
     const booked = db.prepare(`SELECT id, date, slot, job, status FROM bookings WHERE provider_id = ? AND status IN ('pending','accepted') AND date >= ? ORDER BY date, slot`)
       .all(me(req), isoDate(0)).map(x => ({ ...x, when: `${dayLabel(x.date)} ${SLOT_LABELS[x.slot]}` }));
-    return { blocks, booked, slotLabels: SLOT_LABELS };
+    const dateBlocks = db.prepare('SELECT id, date, slot FROM date_blocks WHERE provider_id = ? AND date >= ? ORDER BY date, slot').all(me(req), isoDate(0));
+    return { blocks, dateBlocks, booked, slotLabels: SLOT_LABELS };
+  }));
+  // One-off block for a single date, up to 60 days ahead (usability finding UT-03)
+  r.post('/provider/date-blocks', wrap((req, res) => {
+    const b = parse(z.object({ date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), slot: z.number().int().min(0).max(3) }), req.body);
+    if (b.date < isoDate(0) || b.date > isoDate(60)) throw new HttpError(400, 'Choose a date from today up to 60 days ahead.');
+    const exists = db.prepare('SELECT id FROM date_blocks WHERE provider_id = ? AND date = ? AND slot = ?').get(me(req), b.date, b.slot);
+    if (exists) return { id: exists.id, ...b };
+    const id = db.prepare('INSERT INTO date_blocks (provider_id, date, slot) VALUES (?,?,?)').run(me(req), b.date, b.slot).lastInsertRowid;
+    res.status(201);
+    return { id: Number(id), ...b };
+  }));
+  r.delete('/provider/date-blocks/:id', wrap((req) => {
+    const d = db.prepare('DELETE FROM date_blocks WHERE id = ? AND provider_id = ?').run(req.params.id, me(req));
+    if (!d.changes) throw notFound('Block');
+    return { ok: true };
   }));
   r.post('/provider/blocks', wrap((req, res) => {
     const b = parse(z.object({ dow: z.number().int().min(1).max(7), slot: z.number().int().min(0).max(3) }), req.body);

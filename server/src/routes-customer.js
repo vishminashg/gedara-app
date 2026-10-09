@@ -125,7 +125,9 @@ export function customerRoutes(db) {
   }));
   r.get('/providers/:id/slots', wrap((req) => {
     if (!providerProfile(db, Number(req.params.id), me(req))) throw notFound('Provider');
-    return slotGrid(db, Number(req.params.id));
+    // ?days=28 lets the app show four weeks ahead (usability finding UT-03); the default stays 4 days
+    const { days } = parse(z.object({ days: z.coerce.number().int().min(1).max(28).default(4) }), req.query);
+    return slotGrid(db, Number(req.params.id), days);
   }));
 
   /* favourites: Create + Delete + Read */

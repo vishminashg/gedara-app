@@ -56,13 +56,13 @@ Be ready to say the limits honestly: photos store a count, not files; no payment
 
 ## 5. Testing – what to say
 
-- **97 automated tests**: 68 API (TC-01…68) and 29 browser (UI-01…29, 390 × 844 phone viewport, one at 1280 × 800).
+- **104 automated tests**: 70 API (TC-01…70) and 34 browser (UI-01…34, 390 × 844 phone viewport, one at 1280 × 800).
 - Test names are `TC-xx | FR… | title`, so the traceability matrix in the report is generated from the real results, not typed by hand.
 - Each requirement FR1–13 and NFR1–6 has at least one test. NFR1 (works on a phone) is supported by the browser suite plus the APK; say that a check on a real device is part of the demo.
 - Defects found while building (DEF1–DEF10): privacy gap in provider phone, search missing "plumber", past slots, clipped tab labels, clipped button, wide sidebar, dashboard data, http blocked in the APK, narrow Cancel button, touch targets under 44 px. Be able to explain two of them in detail.
 - **Usability testing** (section 10): ≥5 sessions, think-aloud, ten tasks, SEQ, SUS, severity High/Medium/Low. **Only talk about results you really collected.**
 
-## 6. Deviations from the prototype (section 7, D1–D12)
+## 6. Deviations from the prototype (section 7, D1–D13)
 
 Know three well: (D1) admin console on a wide screen as a side menu; (D2) photos stored as a count; (D5) calendar blocks repeat weekly. Rule of thumb: every deviation has a reason (time, scope, a finding from testing) and none removes a Milestone 01 requirement.
 
@@ -74,6 +74,7 @@ Know three well: (D1) admin console on a wide screen as a side menu; (D2) photos
 - *How is a password stored?* bcrypt hash, never plain text; JWT lasts 7 days.
 - *What would you do with more time?* File storage for photos/documents, one-off calendar blocks, a payment gateway, push notifications, HTTPS and rate limiting.
 - *What did testing change?* (Use the real findings from your sessions once you have them.)
+- *How does the language switch work? Why not a library?* Every piece of text already goes through the shared components in `ui.js`, so they call `t()` with the English text; `i18n.js` looks it up in `lang/si.js` or `ta.js`, matches sentences with changing values (`{0}`) by pattern, and shows the original English if nothing matches. The choice is saved on the phone. I tested it with a scan that lists any English text that reaches the screen untranslated (UI-32 to UI-34). The Sinhala and Tamil wording needs proofreading by a native speaker; say that honestly.
 - *Which parts did an AI tool help with?* Answer truthfully and say what you can explain and change yourself.
 
 ## 8. Before the viva – checklist

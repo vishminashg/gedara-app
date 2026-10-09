@@ -4,7 +4,7 @@ import { View, Pressable } from 'react-native';
 import { api } from '../../api';
 import { useSession } from '../../session';
 import { useLoad } from '../../hooks';
-import { Screen, BrandBar, IconBtn, Field, Btn, Section, Card, Row, T, H1, Note, Avatar, VerPill, Icon, Stars } from '../../ui';
+import { Screen, BrandBar, IconBtn, LangButton, Field, Btn, Section, Card, Row, T, H1, Note, Avatar, VerPill, Icon, Stars } from '../../ui';
 import { C, TRADES, lkr } from '../../theme';
 
 export default function Home({ navigation }) {
@@ -26,7 +26,7 @@ export default function Home({ navigation }) {
 
   return (
     <>
-      <BrandBar title="Gedara" right={<IconBtn onBrand name="bell" label="Notifications" dot={!!d?.unread} onPress={() => navigation.navigate('Notifications')} testID="bell" />} />
+      <BrandBar title="Gedara" right={<Row><LangButton onBrand /><IconBtn onBrand name="bell" label="Notifications" dot={!!d?.unread} onPress={() => navigation.navigate('Notifications')} testID="bell" /></Row>} />
       <Screen onRefresh={st.reload} refreshing={st.loading && d !== null} style={{ paddingTop: 14 }}>
         <View style={{ gap: 4 }}>
           <H1>What needs fixing?</H1>

@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { api } from '../../api';
 import { useSession } from '../../session';
 import { useLoad, useAction, useWide } from '../../hooks';
-import { Screen, Header, Card, Row, T, Btn, Pill, Note, Field, Section, Stat, Async, Chip, Chips, IconBtn } from '../../ui';
+import { Screen, Header, Card, Row, T, Btn, Pill, Note, Field, Section, Stat, Async, Chip, Chips, IconBtn, LangButton } from '../../ui';
 import { C, F, lkr } from '../../theme';
 
 export default function Dashboard({ navigation }) {
@@ -22,7 +22,7 @@ export default function Dashboard({ navigation }) {
 
   return (
     <Screen onRefresh={st.reload} refreshing={st.loading && st.data !== null}>
-      <Header title="Dashboard" back={false} right={<IconBtn name="log-out" label="Sign out" onPress={() => signOut()} testID="signout" />} />
+      <Header title="Dashboard" back={false} right={<Row><LangButton /><IconBtn name="log-out" label="Sign out" onPress={() => signOut()} testID="signout" /></Row>} />
       <Chips>{[7, 30].map((d) => <Chip key={d} label={`${d} days`} on={days === d} onPress={() => setDays(d)} testID={'range-' + d} />)}</Chips>
       <Async state={st}>{({ stats: s, notes }) => {
         const mx = Math.max(1, ...s.series.map((x) => x.bookings));
@@ -69,7 +69,7 @@ export default function Dashboard({ navigation }) {
             <Section title="Admin notes">
               <Row style={{ alignItems: 'flex-start' }}>
                 <View style={{ flex: 1 }}><Field value={note} onChangeText={setNote} placeholder="Add a note for the team" testID="note-input" /></View>
-                <Btn label="Add" onPress={addNote} busy={busy} disabled={note.trim().length < 2} style={{ minWidth: 64 }} testID="note-add" />
+                <Btn label="Add" onPress={addNote} busy={busy} disabled={note.trim().length < 2} style={{ minWidth: 92 }} testID="note-add" />
               </Row>
               {error ? <Note tone="bad" icon="alert-triangle">{error}</Note> : null}
               {notes.map((n) => (

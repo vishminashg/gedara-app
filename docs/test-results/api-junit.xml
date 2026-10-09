@@ -1,79 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <testsuites>
-	<testcase name="TC-01 | NFR3 | Login succeeds with correct credentials and returns role" time="0.165570" classname="test"/>
-	<testcase name="TC-02 | NFR3 | Login fails with a wrong password (401)" time="0.052905" classname="test"/>
-	<testcase name="TC-03 | NFR3 | Protected route without a token is rejected (401)" time="0.034352" classname="test"/>
-	<testcase name="TC-04 | NFR3 | A customer cannot open the admin API (403)" time="0.058988" classname="test"/>
-	<testcase name="TC-05 | NFR3 | Registration creates a customer and rejects a duplicate email (409)" time="0.069973" classname="test"/>
-	<testcase name="TC-06 | NFR3 | Registration validates input (short password gives 400)" time="0.042749" classname="test"/>
-	<testcase name="TC-07 | FR1 | Browse providers by service returns only that trade" time="0.057532" classname="test"/>
-	<testcase name="TC-08 | FR1 | Free-text search maps &amp;quot;leaking tap&amp;quot; to plumbers" time="0.059074" classname="test"/>
-	<testcase name="TC-09 | FR2 | Verified-only filter hides unverified providers" time="0.062603" classname="test"/>
-	<testcase name="TC-10 | FR2 | Rating filter 4.5+ returns only providers rated 4.5 or higher" time="0.067866" classname="test"/>
-	<testcase name="TC-11 | FR4 | Free-today filter returns only providers with a slot today" time="0.078208" classname="test"/>
-	<testcase name="TC-12 | FR3 | Profile shows price estimates, reviews and work samples" time="0.056337" classname="test"/>
-	<testcase name="TC-13 | FR4 | Slot grid marks taken slots as not free" time="0.068153" classname="test"/>
-	<testcase name="TC-14 | FR1 | Unknown provider returns 404" time="0.056201" classname="test"/>
-	<testcase name="TC-15 | FR12 | Favourites: add (Create), list (Read) and remove (Delete)" time="0.062885" classname="test"/>
-	<testcase name="TC-16 | FR5 | Create a booking draft with problem and photo count" time="0.056956" classname="test"/>
-	<testcase name="TC-17 | FR5 | Update a draft (Update): change the problem text and photos" time="0.096194" classname="test"/>
-	<testcase name="TC-18 | FR5 | Sending a request without a problem description is rejected (400)" time="0.067660" classname="test"/>
-	<testcase name="TC-19 | FR3 FR4 FR13 | Submit a booking with a free slot: status becomes pending" time="0.080062" classname="test"/>
-	<testcase name="TC-20 | NFR5 | Double booking: a slot that is already taken cannot be submitted (409)" time="0.070047" classname="test"/>
-	<testcase name="TC-21 | NFR5 | Two customers cannot hold the same slot" time="0.092718" classname="test"/>
-	<testcase name="TC-22 | FR4 NFR5 | Provider-blocked weekday and slot cannot be booked" time="0.096860" classname="test"/>
-	<testcase name="TC-23 | FR12 | Customer can read My bookings with upcoming and past tabs" time="0.072829" classname="test"/>
-	<testcase name="TC-24 | FR12 | Book again creates a new draft for the same provider and job" time="0.055524" classname="test"/>
-	<testcase name="TC-25 | FR12 | Book again is refused for an unfinished booking (409)" time="0.078731" classname="test"/>
-	<testcase name="TC-26 | FR8 | Cancel a pending booking (Update) and notify the provider" time="0.087326" classname="test"/>
-	<testcase name="TC-27 | FR5 FR12 | Delete a draft (Delete); an accepted booking cannot be deleted (409)" time="0.110661" classname="test"/>
-	<testcase name="TC-28 | NFR3 | A customer cannot read another customer's booking (404)" time="0.050100" classname="test"/>
-	<testcase name="TC-29 | FR8 NFR5 | Changing the time of an accepted booking sends it back to pending" time="0.076183" classname="test"/>
-	<testcase name="TC-30 | FR7 | Send (Create) and read chat messages between customer and provider" time="0.077455" classname="test"/>
-	<testcase name="TC-31 | FR7 | Delete own message (Delete); cannot delete someone else's (404)" time="0.083505" classname="test"/>
-	<testcase name="TC-32 | NFR3 | Someone who is not part of the booking cannot read the chat (404)" time="0.066636" classname="test"/>
-	<testcase name="TC-33 | FR7 | Empty chat message is rejected (400)" time="0.062314" classname="test"/>
-	<testcase name="TC-34 | NFR4 | Review only after a completed job: pending booking is refused (409)" time="0.059656" classname="test"/>
-	<testcase name="TC-35 | NFR4 | Create, Update and Delete a review on a completed job; rating updates" time="0.065583" classname="test"/>
-	<testcase name="TC-36 | NFR4 | Rating must be 1 to 5 (400)" time="0.076604" classname="test"/>
-	<testcase name="TC-37 | FR10 NFR6 | Report a problem creates a complaint with a reference and severity" time="0.054603" classname="test"/>
-	<testcase name="TC-38 | FR10 | Report needs a description (400) and a valid booking (404)" time="0.057404" classname="test"/>
-	<testcase name="TC-39 | FR6 | Provider sees new requests with counts" time="0.060817" classname="test"/>
-	<testcase name="TC-40 | NFR3 | Customer address and phone are hidden until the request is accepted" time="0.068141" classname="test"/>
-	<testcase name="TC-41 | FR6 FR8 | Accept a request (Update) and the customer is notified" time="0.074320" classname="test"/>
-	<testcase name="TC-42 | FR6 | Decline a request; a declined request cannot be accepted later (409)" time="0.059762" classname="test"/>
-	<testcase name="TC-43 | FR5 FR6 | Provider can add a quote to a request (Update)" time="0.051044" classname="test"/>
-	<testcase name="TC-44 | NFR3 | A provider cannot open another provider's request (404)" time="0.052298" classname="test"/>
-	<testcase name="TC-45 | FR6 | Switch &amp;quot;Accepting jobs&amp;quot; off and on (Update)" time="0.070161" classname="test"/>
-	<testcase name="TC-46 | FR4 FR6 | Block a slot (Create), read it back and unblock it (Delete)" time="0.074632" classname="test"/>
-	<testcase name="TC-47 | FR4 | Blocking the same slot twice does not create a duplicate" time="0.068179" classname="test"/>
-	<testcase name="TC-48 | FR4 | Invalid weekday or slot is rejected (400)" time="0.075304" classname="test"/>
-	<testcase name="TC-49 | FR9 | Provider can update profile details (Update)" time="0.059976" classname="test"/>
-	<testcase name="TC-50 | FR9 | Upload (Create) and remove (Delete) a verification document" time="0.073447" classname="test"/>
-	<testcase name="TC-51 | FR13 | Mark an accepted job finished with a price (Update) and see it in earnings" time="0.089770" classname="test"/>
-	<testcase name="TC-52 | FR6 | A pending request cannot be marked finished (409)" time="0.091812" classname="test"/>
-	<testcase name="TC-53 | FR13 | Request a payout (Create), cannot exceed balance (409), cancel it (Delete)" time="0.086179" classname="test"/>
-	<testcase name="TC-54 | FR11 | Dashboard stats for 7 and 30 days; invalid range is rejected" time="0.068271" classname="test"/>
-	<testcase name="TC-55 | FR11 | Admin notes: add (Create), read and delete (Delete)" time="0.056223" classname="test"/>
-	<testcase name="TC-56 | FR9 | Verification queue lists pending applications with documents" time="0.065827" classname="test"/>
-	<testcase name="TC-57 | FR9 NFR4 | Approve is refused until every check is ticked (409)" time="0.066291" classname="test"/>
-	<testcase name="TC-58 | FR9 NFR4 | Tick checks (Update) then approve: provider becomes Verified" time="0.086936" classname="test"/>
-	<testcase name="TC-59 | FR9 | Reject needs a reason and removes the provider from search" time="0.089361" classname="test"/>
-	<testcase name="TC-60 | NFR3 | A provider cannot approve applications (403)" time="0.058745" classname="test"/>
-	<testcase name="TC-61 | FR10 | Complaint list shows newest-open first and filters by status" time="0.058250" classname="test"/>
-	<testcase name="TC-62 | FR10 FR3 | Resolve a complaint with a refund (Update); outcome is required (400)" time="0.069170" classname="test"/>
-	<testcase name="TC-63 | FR10 | A closed complaint cannot be changed again (409)" time="0.055722" classname="test"/>
-	<testcase name="TC-64 | FR10 | Add (Create) and delete (Delete) a case note on a complaint" time="0.070048" classname="test"/>
-	<testcase name="TC-65 | FR8 | Notifications: unread count, mark all read (Update), delete one (Delete)" time="0.081297" classname="test"/>
-	<testcase name="TC-66 | NFR3 FR8 | The provider's phone number is hidden from the customer until the provider accepts" time="0.118409" classname="test"/>
-	<testcase name="TC-67 | FR1 | Search understands trade names such as &amp;quot;plumber&amp;quot; and &amp;quot;electrician&amp;quot;" time="0.062701" classname="test"/>
-	<testcase name="TC-68 | NFR5 FR4 | A time slot that has already started today is not offered (past-slot rule)" time="0.026443" classname="test"/>
-	<!-- tests 68 -->
+	<testcase name="TC-01 | NFR3 | Login succeeds with correct credentials and returns role" time="0.147423" classname="test"/>
+	<testcase name="TC-02 | NFR3 | Login fails with a wrong password (401)" time="0.053651" classname="test"/>
+	<testcase name="TC-03 | NFR3 | Protected route without a token is rejected (401)" time="0.028372" classname="test"/>
+	<testcase name="TC-04 | NFR3 | A customer cannot open the admin API (403)" time="0.065222" classname="test"/>
+	<testcase name="TC-05 | NFR3 | Registration creates a customer and rejects a duplicate email (409)" time="0.065669" classname="test"/>
+	<testcase name="TC-06 | NFR3 | Registration validates input (short password gives 400)" time="0.038933" classname="test"/>
+	<testcase name="TC-07 | FR1 | Browse providers by service returns only that trade" time="0.057648" classname="test"/>
+	<testcase name="TC-08 | FR1 | Free-text search maps &amp;quot;leaking tap&amp;quot; to plumbers" time="0.054742" classname="test"/>
+	<testcase name="TC-09 | FR2 | Verified-only filter hides unverified providers" time="0.055820" classname="test"/>
+	<testcase name="TC-10 | FR2 | Rating filter 4.5+ returns only providers rated 4.5 or higher" time="0.062979" classname="test"/>
+	<testcase name="TC-11 | FR4 | Free-today filter returns only providers with a slot today" time="0.058495" classname="test"/>
+	<testcase name="TC-12 | FR3 | Profile shows price estimates, reviews and work samples" time="0.055327" classname="test"/>
+	<testcase name="TC-13 | FR4 | Slot grid marks taken slots as not free" time="0.075874" classname="test"/>
+	<testcase name="TC-14 | FR1 | Unknown provider returns 404" time="0.055954" classname="test"/>
+	<testcase name="TC-15 | FR12 | Favourites: add (Create), list (Read) and remove (Delete)" time="0.059753" classname="test"/>
+	<testcase name="TC-16 | FR5 | Create a booking draft with problem and photo count" time="0.055286" classname="test"/>
+	<testcase name="TC-17 | FR5 | Update a draft (Update): change the problem text and photos" time="0.056119" classname="test"/>
+	<testcase name="TC-18 | FR5 | Sending a request without a problem description is rejected (400)" time="0.061836" classname="test"/>
+	<testcase name="TC-19 | FR3 FR4 FR13 | Submit a booking with a free slot: status becomes pending" time="0.059147" classname="test"/>
+	<testcase name="TC-20 | NFR5 | Double booking: a slot that is already taken cannot be submitted (409)" time="0.058364" classname="test"/>
+	<testcase name="TC-21 | NFR5 | Two customers cannot hold the same slot" time="0.110550" classname="test"/>
+	<testcase name="TC-22 | FR4 NFR5 | Provider-blocked weekday and slot cannot be booked" time="0.091055" classname="test"/>
+	<testcase name="TC-23 | FR12 | Customer can read My bookings with upcoming and past tabs" time="0.067203" classname="test"/>
+	<testcase name="TC-24 | FR12 | Book again creates a new draft for the same provider and job" time="0.065459" classname="test"/>
+	<testcase name="TC-25 | FR12 | Book again is refused for an unfinished booking (409)" time="0.070312" classname="test"/>
+	<testcase name="TC-26 | FR8 | Cancel a pending booking (Update) and notify the provider" time="0.081290" classname="test"/>
+	<testcase name="TC-27 | FR5 FR12 | Delete a draft (Delete); an accepted booking cannot be deleted (409)" time="0.103328" classname="test"/>
+	<testcase name="TC-28 | NFR3 | A customer cannot read another customer's booking (404)" time="0.050235" classname="test"/>
+	<testcase name="TC-29 | FR8 NFR5 | Changing the time of an accepted booking sends it back to pending" time="0.077564" classname="test"/>
+	<testcase name="TC-30 | FR7 | Send (Create) and read chat messages between customer and provider" time="0.104763" classname="test"/>
+	<testcase name="TC-31 | FR7 | Delete own message (Delete); cannot delete someone else's (404)" time="0.084658" classname="test"/>
+	<testcase name="TC-32 | NFR3 | Someone who is not part of the booking cannot read the chat (404)" time="0.051597" classname="test"/>
+	<testcase name="TC-33 | FR7 | Empty chat message is rejected (400)" time="0.051791" classname="test"/>
+	<testcase name="TC-34 | NFR4 | Review only after a completed job: pending booking is refused (409)" time="0.054717" classname="test"/>
+	<testcase name="TC-35 | NFR4 | Create, Update and Delete a review on a completed job; rating updates" time="0.064353" classname="test"/>
+	<testcase name="TC-36 | NFR4 | Rating must be 1 to 5 (400)" time="0.050915" classname="test"/>
+	<testcase name="TC-37 | FR10 NFR6 | Report a problem creates a complaint with a reference and severity" time="0.053105" classname="test"/>
+	<testcase name="TC-38 | FR10 | Report needs a description (400) and a valid booking (404)" time="0.051789" classname="test"/>
+	<testcase name="TC-39 | FR6 | Provider sees new requests with counts" time="0.050755" classname="test"/>
+	<testcase name="TC-40 | NFR3 | Customer address and phone are hidden until the request is accepted" time="0.067716" classname="test"/>
+	<testcase name="TC-41 | FR6 FR8 | Accept a request (Update) and the customer is notified" time="0.075872" classname="test"/>
+	<testcase name="TC-42 | FR6 | Decline a request; a declined request cannot be accepted later (409)" time="0.053837" classname="test"/>
+	<testcase name="TC-43 | FR5 FR6 | Provider can add a quote to a request (Update)" time="0.050406" classname="test"/>
+	<testcase name="TC-44 | NFR3 | A provider cannot open another provider's request (404)" time="0.049744" classname="test"/>
+	<testcase name="TC-45 | FR6 | Switch &amp;quot;Accepting jobs&amp;quot; off and on (Update)" time="0.055027" classname="test"/>
+	<testcase name="TC-46 | FR4 FR6 | Block a slot (Create), read it back and unblock it (Delete)" time="0.055664" classname="test"/>
+	<testcase name="TC-47 | FR4 | Blocking the same slot twice does not create a duplicate" time="0.054159" classname="test"/>
+	<testcase name="TC-48 | FR4 | Invalid weekday or slot is rejected (400)" time="0.055641" classname="test"/>
+	<testcase name="TC-49 | FR9 | Provider can update profile details (Update)" time="0.054991" classname="test"/>
+	<testcase name="TC-50 | FR9 | Upload (Create) and remove (Delete) a verification document" time="0.058906" classname="test"/>
+	<testcase name="TC-51 | FR13 | Mark an accepted job finished with a price (Update) and see it in earnings" time="0.059281" classname="test"/>
+	<testcase name="TC-52 | FR6 | A pending request cannot be marked finished (409)" time="0.051007" classname="test"/>
+	<testcase name="TC-53 | FR13 | Request a payout (Create), cannot exceed balance (409), cancel it (Delete)" time="0.064002" classname="test"/>
+	<testcase name="TC-54 | FR11 | Dashboard stats for 7 and 30 days; invalid range is rejected" time="0.056765" classname="test"/>
+	<testcase name="TC-55 | FR11 | Admin notes: add (Create), read and delete (Delete)" time="0.053140" classname="test"/>
+	<testcase name="TC-56 | FR9 | Verification queue lists pending applications with documents" time="0.057731" classname="test"/>
+	<testcase name="TC-57 | FR9 NFR4 | Approve is refused until every check is ticked (409)" time="0.051876" classname="test"/>
+	<testcase name="TC-58 | FR9 NFR4 | Tick checks (Update) then approve: provider becomes Verified" time="0.077054" classname="test"/>
+	<testcase name="TC-59 | FR9 | Reject needs a reason and removes the provider from search" time="0.076385" classname="test"/>
+	<testcase name="TC-60 | NFR3 | A provider cannot approve applications (403)" time="0.047711" classname="test"/>
+	<testcase name="TC-61 | FR10 | Complaint list shows newest-open first and filters by status" time="0.051000" classname="test"/>
+	<testcase name="TC-62 | FR10 FR3 | Resolve a complaint with a refund (Update); outcome is required (400)" time="0.058923" classname="test"/>
+	<testcase name="TC-63 | FR10 | A closed complaint cannot be changed again (409)" time="0.060539" classname="test"/>
+	<testcase name="TC-64 | FR10 | Add (Create) and delete (Delete) a case note on a complaint" time="0.070946" classname="test"/>
+	<testcase name="TC-65 | FR8 | Notifications: unread count, mark all read (Update), delete one (Delete)" time="0.098683" classname="test"/>
+	<testcase name="TC-66 | NFR3 FR8 | The provider's phone number is hidden from the customer until the provider accepts" time="0.090729" classname="test"/>
+	<testcase name="TC-67 | FR1 | Search understands trade names such as &amp;quot;plumber&amp;quot; and &amp;quot;electrician&amp;quot;" time="0.055795" classname="test"/>
+	<testcase name="TC-68 | NFR5 FR4 | A time slot that has already started today is not offered (past-slot rule)" time="0.023380" classname="test"/>
+	<testcase name="TC-69 | FR4 FR6 NFR5 | A one-off date block (Create, Read, Delete) hides only that date, not the same weekday next week" time="0.117090" classname="test"/>
+	<testcase name="TC-70 | FR4 | A date block is not duplicated, and a past or far-future date is rejected (400)" time="0.080542" classname="test"/>
+	<!-- tests 70 -->
 	<!-- suites 0 -->
-	<!-- pass 68 -->
+	<!-- pass 70 -->
 	<!-- fail 0 -->
 	<!-- cancelled 0 -->
 	<!-- skipped 0 -->
 	<!-- todo 0 -->
-	<!-- duration_ms 5146.344636 -->
+	<!-- duration_ms 4828.65185 -->
 </testsuites>

@@ -69,7 +69,8 @@ These are app behaviours, not participant errors. Note what participants say abo
 - Photos are not uploaded: the app only records that a photo was added, and the provider sees placeholder tiles (T3, T7).
 - The admin's document tiles are placeholders that cannot be opened, and there are 4 checks for 2 documents (T9).
 - "Next free" and the "Today" slots ignore the time of day, so after 4 pm the app can still offer "Today 4:00 pm" (T2, T3).
-- A calendar block repeats every week; a one-off absence cannot be blocked (T8). A fixed day can already hold a seeded booking, so T8 uses "the day three days from today".
+- The calendar can block one date only (default) or every week, up to four weeks ahead (T8). This was added after the first usability sessions (issue UT-03). A fixed day can already hold a seeded booking, so T8 uses "the day three days from today".
+- The app can be switched to Sinhala or Tamil with the globe button on Home, Requests and Dashboard (or the language buttons on the sign-in screen). This was added after the first usability sessions (issue UT-05). Names and the sample reviews stay in English.
 - The demo data is dated "today" when it is created: always reset on the day of the sessions.
 - An APK cannot find the server by itself, and Android may refuse plain `http://` in a release build: test it first, or use Expo Go.
 

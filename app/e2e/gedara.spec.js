@@ -160,7 +160,7 @@ test('UI-13 | FR4 FR6 NFR5 | A slot the provider blocks cannot be booked by a cu
   const prov = await asNew(browser, 'provider');
   await tid(prov, 'tab-Calendar').click();
   await tid(prov, `cell-${iso(1)}-3`).click();
-  await expect(prov.getByText(/Blocked every/)).toBeVisible();
+  await expect(prov.getByText(/Blocked on .* only/)).toBeVisible();
   await signIn(page, 'customer');
   await tid(page, 'svc-plumbing').click();
   await page.locator('[data-testid^="prov-"]').first().click();
@@ -169,6 +169,25 @@ test('UI-13 | FR4 FR6 NFR5 | A slot the provider blocks cannot be booked by a cu
   await tid(page, 'to-time').click();
   await tid(page, 'day-1').click();
   await expect(tid(page, 'slot-3')).toHaveAttribute('aria-disabled', 'true');
+});
+
+test('UI-30 | FR4 FR6 NFR5 | A provider can block one date in a later week and customers see only that date blocked', async ({ browser, page }) => {
+  const prov = await asNew(browser, 'provider');
+  await tid(prov, 'tab-Calendar').click();
+  await tid(prov, 'week-later').click();
+  await tid(prov, `cell-${iso(10)}-3`).click();
+  await expect(prov.getByText(/Blocked on .* only/)).toBeVisible();
+  await signIn(page, 'customer');
+  await tid(page, 'svc-plumbing').click();
+  await page.locator('[data-testid^="prov-"]').first().click();
+  await tid(page, 'request-booking').click();
+  await tid(page, 'problem').fill('Leaking tap');
+  await tid(page, 'to-time').click();
+  await tid(page, 'days-later').click();
+  await tid(page, 'day-10').click();
+  await expect(tid(page, 'slot-3')).toHaveAttribute('aria-disabled', 'true');
+  await tid(page, 'day-9').click();
+  await expect(tid(page, 'slot-3')).not.toHaveAttribute('aria-disabled', 'true');
 });
 
 test('UI-14 | FR10 NFR6 | Customer rates a completed job', async ({ page }) => {
@@ -354,5 +373,104 @@ test('UI-29 | NFR1 FR9 | Admin on a wide screen shows a side menu and a list bes
   await nav.click();
   await expect(page.locator('[data-testid^="app-"]').first()).toBeVisible();
   await expect(tid(page, 'approve-' + (await page.locator('[data-testid^="approve-"]').first().getAttribute('data-testid')).split('-')[1])).toBeVisible();
+  await ctx.close();
+});
+
+/* ---------- Language: English, Sinhala, Tamil (usability finding UT-05, requirement NFR2) ---------- */
+
+/** Opens a fresh browser tab in the given language and records any English text that reached the screen without a translation. */
+async function inLanguage(browser, lang, role, viewport = { width: 390, height: 844 }) {
+  const ctx = await browser.newContext({ viewport });
+  await ctx.addInitScript((l) => { window.__gedaraMissing = new Set(); try { localStorage.setItem('gedara.lang', l); } catch (e) { /* ignore */ } }, lang);
+  const page = await ctx.newPage();
+  await page.goto('/');
+  if (role) { await tid(page, `demo-${role}`).click(); await tid(page, 'login-submit').click(); }
+  return { page, ctx };
+}
+/** Names, sample text and file names are data, not interface text, so they are allowed to stay in English. */
+const DATA_TEXT = [/^LKR [\d,]+/, /\.(pdf|jpg)$/i, /^English$/, /Galle Road/, /^Review the two electrician/, /^[A-Z][a-z]+ [A-Z][a-z.]+/,
+  /^(Kitchen sink drains|Arrived at the time|Explained the problem|Good work, ten|Licensed plumber|Light fitting came|The provider did not arrive|Kitchen tap leaking|Quoted LKR|Certified electrician|Lighting and small|Independent plumber|Careful, detail|Team of four|New to the platform|New applicant)/, /^Sparkle Home Crew/];
+const untranslated = async (page) => (await page.evaluate(() => [...window.__gedaraMissing])).filter((x) => !DATA_TEXT.some((re) => re.test(x)));
+
+test('UI-31 | NFR2 | The sign-in screen can be switched to Sinhala and Tamil, and the choice is remembered', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
+  await tid(page, 'lang-si').click();
+  await expect(page.getByRole('heading', { name: 'පිවිසෙන්න' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sign in' })).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'පිවිසෙන්න' })).toBeVisible(); // still Sinhala after a restart
+  await tid(page, 'lang-ta').click();
+  await expect(page.getByRole('heading', { name: 'உள்நுழை' })).toBeVisible();
+  await tid(page, 'lang-en').click();
+  await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
+});
+
+test('UI-32 | NFR2 FR1 FR3 FR4 | A customer can search, choose a time and send a request entirely in Sinhala', async ({ browser }) => {
+  const { page, ctx } = await inLanguage(browser, 'si', null);
+  await tid(page, 'login-submit').click();
+  await expect(page.getByText('ඔබේ විද්‍යුත් තැපැල් ලිපිනය ඇතුළත් කරන්න.')).toBeVisible(); // validation message in Sinhala
+  await tid(page, 'login-email').fill('dilani@gedara.lk');
+  await tid(page, 'login-password').fill('wrong-password');
+  await tid(page, 'login-submit').click();
+  await expect(page.getByText('විද්‍යුත් තැපෑල හෝ මුරපදය වැරදියි.')).toBeVisible(); // a message that comes from the server is translated too
+  await tid(page, 'demo-customer').click();
+  await tid(page, 'login-submit').click();
+  await expect(page.getByText('මොනවාද අලුත්වැඩියා කළ යුත්තේ?')).toBeVisible();
+  await tid(page, 'svc-plumbing').click();
+  await page.locator('[data-testid^="prov-"]').first().click();
+  await tid(page, 'request-booking').click();
+  await tid(page, 'problem').fill('Kitchen tap leaking under the sink');
+  await tid(page, 'to-time').click();
+  await tid(page, 'day-1').click();
+  await expect(tid(page, 'slot-2')).toContainText(/ප\.ව\./); // 2:00 pm is written the Sinhala way
+  await tid(page, 'slot-2').click();
+  await tid(page, 'send-request').click();
+  await expect(page.getByText('සේවා සපයන්නා එනතුරු රැඳී සිටී')).toBeVisible();
+  await expect(tid(page, 'cancel')).toContainText('ඉල්ලීම අවලංගු කරන්න');
+  expect(await untranslated(page)).toEqual([]);
+  await ctx.close();
+});
+
+test('UI-33 | NFR2 FR6 FR9 | Provider and admin screens work in Tamil', async ({ browser }) => {
+  const prov = await inLanguage(browser, 'ta', 'provider');
+  await expect(prov.page.getByText('புதிய வேலைகளை ஏற்கிறேன்')).toBeVisible();
+  await prov.page.locator('[data-testid^="req-"]').first().click();
+  await expect(prov.page.getByText('கோரிக்கை விவரங்கள்')).toBeVisible();
+  await expect(tid(prov.page, 'accept')).toContainText('கோரிக்கையை ஏற்றுக்கொள்');
+  await prov.page.getByRole('button', { name: 'பின்செல்' }).first().click();
+  await tid(prov.page, 'tab-Calendar').click();
+  await expect(tid(prov.page, 'block-date')).toHaveText('இந்த தேதி மட்டும்');
+  await tid(prov.page, 'tab-History').click();
+  await expect(prov.page.getByText('வேலைகள் மற்றும் கட்டணங்கள்')).toBeVisible();
+  await tid(prov.page, 'tab-Me').click();
+  await expect(prov.page.getByText('சுயவிவரம் மற்றும் ஆவணங்கள்')).toBeVisible();
+  expect(await untranslated(prov.page)).toEqual([]);
+  await prov.ctx.close();
+
+  const adm = await inLanguage(browser, 'ta', 'admin');
+  await expect(adm.page.getByText('முகப்புப் பலகை').first()).toBeVisible();
+  await tid(adm.page, 'tab-Verification').click();
+  await expect(adm.page.getByText('சேவை வழங்குநர் சரிபார்ப்பு').first()).toBeVisible();
+  await tid(adm.page, 'tab-Complaints').click();
+  await expect(adm.page.getByText('புகார்கள்').first()).toBeVisible();
+  await adm.page.locator('[data-testid^="case-C-"]').first().click();
+  await expect(adm.page.getByText('ஆதாரம்').first()).toBeVisible();
+  expect(await untranslated(adm.page)).toEqual([]);
+  await adm.ctx.close();
+});
+
+test('UI-34 | NFR2 | The language can be changed from the home screen and every screen follows it', async ({ browser }) => {
+  const { page, ctx } = await inLanguage(browser, 'en', 'customer');
+  await expect(page.getByText('What needs fixing?')).toBeVisible();
+  await tid(page, 'lang-button').click();
+  await tid(page, 'lang-si').click();
+  await tid(page, 'lang-done').click();
+  await expect(page.getByText('මොනවාද අලුත්වැඩියා කළ යුත්තේ?')).toBeVisible();
+  await tid(page, 'tab-Bookings').click();
+  await expect(page.getByText('මගේ වෙන්කිරීම්').first()).toBeVisible();
+  await tid(page, 'tab-Messages').click();
+  await expect(page.getByText('පණිවිඩ').first()).toBeVisible();
+  expect(await untranslated(page)).toEqual([]);
   await ctx.close();
 });

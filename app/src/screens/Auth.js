@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { View, Pressable, Text, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native';
 import { api, setBase, getBase } from '../api';
 import { defaultBase, loadBase, saveBase } from '../config';
 import { useSession } from '../session';
 import { useAction } from '../hooks';
-import { Btn, Field, H1, T, Note, Chip, Chips, Seg, Card, Row, Icon } from '../ui';
+import { Btn, Field, H1, T, Note, Chip, Chips, Seg, Card, Row, Icon, Text, LangPicker } from '../ui';
 import { C, F, TRADES } from '../theme';
 
 const DEMO = [['Customer', 'dilani@gedara.lk'], ['Provider', 'nimal@gedara.lk'], ['Admin', 'ruwan@gedara.lk']];
@@ -16,8 +16,9 @@ function Shell({ children }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: C.bg }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 20, gap: 16, paddingBottom: 40 }}>
+          <LangPicker />
           <View style={{ gap: 2, paddingTop: 8 }}>
-            <Text style={{ fontFamily: F.head, fontSize: 34, color: C.brand, letterSpacing: -0.6 }}>Gedara</Text>
+            <Text plain style={{ fontFamily: F.head, fontSize: 34, color: C.brand, letterSpacing: -0.6 }}>Gedara</Text>
             <T muted>Home services in Dehiwala and Mount Lavinia: plumbing, electrical and cleaning.</T>
           </View>
           {children}

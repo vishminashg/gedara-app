@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { api } from '../../api';
 import { useLoad, useAction } from '../../hooks';
 import { useSession } from '../../session';
-import { BrandBar, IconBtn, Screen, Card, Row, T, Stat, Switch, Section, Pill, Async, Empty, Icon, Note, Btn } from '../../ui';
+import { BrandBar, IconBtn, LangButton, Screen, Card, Row, T, Stat, Switch, Section, Pill, Async, Empty, Icon, Note, Btn } from '../../ui';
 import { C } from '../../theme';
 
 const TONE = { pending: ['warn', 'New'], accepted: ['good', 'Accepted'], completed: ['mute', 'Done'], declined: ['mute', 'Declined'], cancelled: ['mute', 'Cancelled'] };
@@ -23,7 +23,7 @@ export default function Requests({ navigation }) {
 
   return (
     <>
-      <BrandBar title={`Hi, ${user.name.split(' ')[0]}`} right={<IconBtn onBrand name="bell" label="Notifications" dot={!!st.data?.unread} onPress={() => navigation.navigate('Notifications')} />} />
+      <BrandBar title={`Hi, ${user.name.split(' ')[0]}`} right={<Row><LangButton onBrand /><IconBtn onBrand name="bell" label="Notifications" dot={!!st.data?.unread} onPress={() => navigation.navigate('Notifications')} /></Row>} />
       <Screen onRefresh={st.reload} refreshing={st.loading && st.data !== null} style={{ paddingTop: 14 }}>
         <Async state={st}>{(d) => (
           <>

@@ -6,6 +6,7 @@ import { Feather } from '@expo/vector-icons';
 import { useWide } from './hooks';
 import { useSession } from './session';
 import { Loading } from './ui';
+import { useT } from './i18n';
 import { C, F } from './theme';
 
 import { LoginScreen, RegisterScreen } from './screens/Auth';
@@ -33,7 +34,7 @@ const Tab = createBottomTabNavigator();
 const theme = { ...DefaultTheme, colors: { ...DefaultTheme.colors, background: C.bg, primary: C.brand, card: C.card, text: C.text, border: C.line } };
 const stackOpts = { headerShown: false, contentStyle: { backgroundColor: C.bg } };
 
-const tabs = (items, sidebar = false) => (
+const tabs = (items, sidebar = false, t = (x) => x) => (
   <Tab.Navigator screenOptions={({ route }) => ({
     headerShown: false,
     ...(sidebar ? { tabBarPosition: 'left', tabBarVariant: 'material', tabBarLabelPosition: 'beside-icon' } : {}),
@@ -44,13 +45,13 @@ const tabs = (items, sidebar = false) => (
     tabBarIcon: ({ color }) => <Feather name={items.find((i) => i[0] === route.name)[2]} size={20} color={color} />,
     tabBarButtonTestID: 'tab-' + route.name
   })}>
-    {items.map(([name, comp, , label]) => <Tab.Screen key={name} name={name} component={comp} options={{ tabBarLabel: label || name }} />)}
+    {items.map(([name, comp, , label]) => <Tab.Screen key={name} name={name} component={comp} options={{ tabBarLabel: t(label || name) }} />)}
   </Tab.Navigator>
 );
 
-const CustomerTabs = () => tabs([['Home', Home, 'home'], ['Bookings', Bookings, 'list'], ['Messages', Messages, 'message-square']]);
-const ProviderTabs = () => tabs([['Requests', Requests, 'bell'], ['Calendar', Calendar, 'calendar'], ['History', History, 'credit-card'], ['Me', MyProfile, 'user', 'Profile']]);
-const AdminTabs = () => tabs([['Dashboard', Dashboard, 'grid'], ['Verification', Verification, 'shield'], ['Complaints', Complaints, 'flag']], useWide());
+const CustomerTabs = () => tabs([['Home', Home, 'home'], ['Bookings', Bookings, 'list'], ['Messages', Messages, 'message-square']], false, useT());
+const ProviderTabs = () => tabs([['Requests', Requests, 'bell'], ['Calendar', Calendar, 'calendar'], ['History', History, 'credit-card'], ['Me', MyProfile, 'user', 'Profile']], false, useT());
+const AdminTabs = () => tabs([['Dashboard', Dashboard, 'grid'], ['Verification', Verification, 'shield'], ['Complaints', Complaints, 'flag']], useWide(), useT());
 
 function Customer() {
   return (

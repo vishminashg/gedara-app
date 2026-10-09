@@ -5,6 +5,7 @@ import { api } from '../../api';
 import { useLoad, useAction } from '../../hooks';
 import { Screen, Header, Card, Row, T, Btn, Pill, Note, Field, KV, Section, Photo, Async, Sheet, Radio, Icon, Toast } from '../../ui';
 import { useToast } from '../../hooks';
+import { useT } from '../../i18n';
 import { C, lkr } from '../../theme';
 
 const DECLINE = ['Not available at that time', 'Outside my area', 'Job too small or too big'];
@@ -29,6 +30,7 @@ export default function Request({ navigation, route }) {
   const [quoteErr, setQuoteErr] = useState('');
   const { busy, error, run } = useAction();
   const toast = useToast();
+  const tr = useT();
 
   const num = (v) => Number(String(v).replace(/[, ]/g, ''));
   const accept = (r) => {
@@ -45,7 +47,7 @@ export default function Request({ navigation, route }) {
     return run(async () => { st.setData(await api.patch('/provider/requests/' + id, { status: 'completed', price: p })); setSheet(null); toast.show('Job recorded under History.'); });
   };
   const suggest = (t, r) => run(async () => {
-    await api.post(`/bookings/${id}/messages`, { body: `Could we do ${t} instead? If that suits you, please change the time of your request.` });
+    await api.post(`/bookings/${id}/messages`, { body: tr(`Could we do ${t} instead? If that suits you, please change the time of your request.`) });
     setSheet(null); toast.show('Suggestion sent in chat.');
   });
 
@@ -63,7 +65,7 @@ export default function Request({ navigation, route }) {
         <Header title="Request details" />
         <Async state={st}>{(r) => (
           <>
-            <Card><T b style={{ fontSize: 16 }}>{r.job || 'Job request'}</T><Row style={{ alignItems: 'center', gap: 6, flexWrap: 'wrap' }}><T small muted>From {r.customer}</T><Pill tone="good" icon="check">Phone verified</Pill></Row></Card>
+            <Card><T b style={{ fontSize: 16 }}>{r.job || 'Job request'}</T><Row style={{ alignItems: 'center', gap: 6, flexWrap: 'wrap' }}><T small muted>Requested by {r.customer}</T><Pill tone="good" icon="check">Phone verified</Pill></Row></Card>
             <Card>
               <KV k="Preferred time" v={r.when} />
               <KV k="Area" v={r.area || '-'} />

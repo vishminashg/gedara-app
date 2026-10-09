@@ -49,7 +49,7 @@ export default function Complaints() {
           {!closed ? (
             <Row style={{ alignItems: 'flex-start' }}>
               <View style={{ flex: 1 }}><Field value={note} onChangeText={setNote} placeholder="Add a case note" testID="case-note" /></View>
-              <Btn small label="Add" onPress={() => addNote(c)} disabled={note.trim().length < 2} busy={busy} style={{ flex: 0, minWidth: 60 }} testID="case-note-add" />
+              <Btn small label="Add" onPress={() => addNote(c)} disabled={note.trim().length < 2} busy={busy} style={{ flex: 0, minWidth: 92 }} testID="case-note-add" />
             </Row>
           ) : null}
         </View>

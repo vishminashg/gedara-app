@@ -61,6 +61,15 @@ CREATE TABLE IF NOT EXISTS blocks (
   UNIQUE (provider_id, dow, slot)
 );
 
+-- One-off blocks for a single date (added after usability finding UT-03). The weekly table above is kept.
+CREATE TABLE IF NOT EXISTS date_blocks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  provider_id INTEGER NOT NULL REFERENCES providers(user_id) ON DELETE CASCADE,
+  date TEXT NOT NULL,
+  slot INTEGER NOT NULL CHECK (slot BETWEEN 0 AND 3),
+  UNIQUE (provider_id, date, slot)
+);
+
 CREATE TABLE IF NOT EXISTS favourites (
   customer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   provider_id INTEGER NOT NULL REFERENCES providers(user_id) ON DELETE CASCADE,
@@ -198,7 +207,7 @@ export function slotPassed(date, slot, now = new Date()) {
   return date === isoDate(0, now) && now.getHours() >= SLOT_HOURS[slot];
 }
 
-/** A slot is free when no pending/accepted booking holds it and the provider has not blocked that weekday/slot. */
+/** A slot is free when no pending/accepted booking holds it and the provider has blocked neither that weekday/slot nor that exact date/slot. */
 export function slotIsFree(db, providerId, date, slot, ignoreBookingId = 0, { checkPast = false } = {}) {
   if (checkPast && slotPassed(date, slot)) return false;
   const taken = db.prepare(
@@ -208,7 +217,10 @@ export function slotIsFree(db, providerId, date, slot, ignoreBookingId = 0, { ch
   if (taken) return false;
   const blocked = db.prepare('SELECT 1 FROM blocks WHERE provider_id = ? AND dow = ? AND slot = ?')
     .get(providerId, isoDow(date), slot);
-  return !blocked;
+  if (blocked) return false;
+  const dateBlocked = db.prepare('SELECT 1 FROM date_blocks WHERE provider_id = ? AND date = ? AND slot = ?')
+    .get(providerId, date, slot);
+  return !dateBlocked;
 }
 
 export function nextFree(db, providerId, days = 7) {

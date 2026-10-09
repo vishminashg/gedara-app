@@ -1,19 +1,20 @@
 // C5 Pick a time and confirm (FR3, FR4, FR13, NFR5). Step 2 of 2, also used to change the time of an existing booking.
 import React, { useState } from 'react';
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { api } from '../../api';
 import { useLoad, useAction } from '../../hooks';
-import { Screen, Header, Chip, Chips, Btn, Row, T, Section, Card, KV, Radio, Note, Async } from '../../ui';
+import { Screen, Header, Chip, Chips, Btn, Row, T, Section, Card, KV, Radio, Note, Async, Text } from '../../ui';
 import { C, F, R } from '../../theme';
 
 export default function Time({ navigation, route }) {
   const { flow, editBookingId } = route.params;
   const editing = !!editBookingId;
   const [day, setDay] = useState(null);
+  const [week, setWeek] = useState(0); // which 7 days are shown (4 weeks ahead)
   const [slot, setSlot] = useState(null);
   const [pay, setPay] = useState('Cash');
   const { busy, error, setError, run } = useAction();
-  const st = useLoad(() => api.get(`/providers/${flow.providerId}/slots`), [flow.providerId]);
+  const st = useLoad(() => api.get(`/providers/${flow.providerId}/slots?days=28`), [flow.providerId]);
 
   const chosen = st.data && day !== null ? st.data[day] : null;
   const label = chosen && slot !== null ? `${chosen.label} ${chosen.slots[slot].label}` : 'Not chosen';
@@ -41,7 +42,13 @@ export default function Time({ navigation, route }) {
       {!editing ? <T small b muted>Step 2 of 2</T> : null}
       <Async state={st}>{(grid) => (
         <>
-          <Chips>{grid.map((d, i) => <Chip key={d.date} label={d.label} on={day === i} onPress={() => { setDay(i); setSlot(null); setError(''); }} testID={'day-' + i} />)}</Chips>
+          <Chips>
+            {grid.slice(week * 7, week * 7 + 7).map((d, k) => { const i = week * 7 + k; return <Chip key={d.date} label={d.label} on={day === i} onPress={() => { setDay(i); setSlot(null); setError(''); }} testID={'day-' + i} />; })}
+          </Chips>
+          <Row gap={8}>
+            <Chip label="Earlier days" icon="chevron-left" on={false} onPress={() => setWeek(Math.max(0, week - 1))} testID="days-earlier" />
+            <Chip label="Later days" icon="chevron-right" on={false} onPress={() => setWeek(Math.min(Math.ceil(grid.length / 7) - 1, week + 1))} testID="days-later" />
+          </Row>
           {day === null ? <T small muted>Choose a day to see free times.</T> : (
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
               {grid[day].slots.map((s) => (

@@ -1,10 +1,31 @@
 // Shared building blocks. Each one mirrors a component class from the Milestone 02 prototype.
 import React from 'react';
-import { View, Text, Pressable, TextInput, ScrollView, Modal, ActivityIndicator, StyleSheet, RefreshControl, Platform } from 'react-native';
+import { View, Text as RNText, Pressable, TextInput, ScrollView, Modal, ActivityIndicator, StyleSheet, RefreshControl, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { C, F, R, shadow, AVATAR, initials } from './theme';
+import { useLang, translateNode, LANGS } from './i18n';
+
+// Sinhala and Tamil are not in the Figtree / Bricolage fonts, so in those languages the phone's own font is used
+// (same weights), with a taller line so tall letters and marks are not cut off.
+const WEIGHT = { Figtree_500Medium: '500', Figtree_600SemiBold: '600', Figtree_700Bold: '700', BricolageGrotesque_700Bold: '700' };
+
+/** Every piece of text in the app is drawn by this: it translates the text and adjusts the font for Sinhala and Tamil. */
+export function Text({ style, children, plain, ...p }) {
+  const { lang } = useLang();
+  let st = style;
+  if (plain) return <RNText {...p} style={st}>{children}</RNText>;   // brand name: never translated or restyled
+  if (lang !== 'en') {
+    const f = { ...(StyleSheet.flatten(style) || {}) };
+    if (f.fontFamily && WEIGHT[f.fontFamily]) { f.fontWeight = WEIGHT[f.fontFamily]; delete f.fontFamily; }
+    f.lineHeight = Math.round((typeof f.lineHeight === 'number' ? f.lineHeight * 1.18 : (f.fontSize || 14) * 1.5));
+    st = f;
+  }
+  const out = translateNode(lang, children);
+  // Spread so React does not ask for keys on the pieces of a sentence.
+  return Array.isArray(out) ? React.createElement(RNText, { ...p, style: st }, ...out) : <RNText {...p} style={st}>{out}</RNText>;
+}
 
 export const Icon = ({ name, size = 18, color = 'currentColor' }) => <Feather name={name} size={size} color={color === 'currentColor' ? C.text : color} />;
 
@@ -46,19 +67,22 @@ export function Header({ title, back = true, right }) {
 export function BrandBar({ title, right }) {
   return (
     <View style={s.brandbar}>
-      <Text style={s.logo}>{title}</Text>
+      <Text plain={title === 'Gedara'} style={s.logo}>{title}</Text>
       {right}
     </View>
   );
 }
 
-export const IconBtn = ({ name, label, onPress, dot, onBrand, testID }) => (
-  <Pressable accessibilityRole="button" accessibilityLabel={label} testID={testID} onPress={onPress}
-    style={[s.iconbtn, onBrand && { backgroundColor: 'rgba(255,255,255,.14)', borderColor: 'transparent' }]}>
-    <Feather name={name} size={18} color={onBrand ? '#fff' : C.text} />
-    {dot ? <View style={s.dot} /> : null}
-  </Pressable>
-);
+export const IconBtn = ({ name, label, onPress, dot, onBrand, testID }) => {
+  const { t } = useLang();
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={t(label)} testID={testID} onPress={onPress}
+      style={[s.iconbtn, onBrand && { backgroundColor: 'rgba(255,255,255,.14)', borderColor: 'transparent' }]}>
+      <Feather name={name} size={18} color={onBrand ? '#fff' : C.text} />
+      {dot ? <View style={s.dot} /> : null}
+    </Pressable>
+  );
+};
 
 export const Section = ({ title, hint, children }) => (
   <View style={{ gap: 8 }}>
@@ -71,9 +95,10 @@ export const Section = ({ title, hint, children }) => (
 );
 
 export const Card = ({ children, onPress, style, label, testID }) => {
+  const { t } = useLang();
   const inner = [s.card, style];
   return onPress
-    ? <Pressable accessibilityRole="button" accessibilityLabel={label} testID={testID} onPress={onPress} style={({ pressed }) => [inner, pressed && { opacity: 0.85 }]}>{children}</Pressable>
+    ? <Pressable accessibilityRole="button" accessibilityLabel={t(label)} testID={testID} onPress={onPress} style={({ pressed }) => [inner, pressed && { opacity: 0.85 }]}>{children}</Pressable>
     : <View style={inner} testID={testID}>{children}</View>;
 };
 
@@ -88,11 +113,12 @@ export const KV = ({ k, v, last, vNode }) => (
 
 /* ---------- controls ---------- */
 export function Btn({ label, onPress, kind = 'primary', icon, disabled, busy, small, testID, style }) {
+  const { t } = useLang();
   const sec = kind === 'secondary', bad = kind === 'danger';
   const fg = sec ? C.brand : bad ? C.bad : C.onBrand;
   const off = disabled || busy;
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: !!off, busy: !!busy }} testID={testID}
+    <Pressable accessibilityRole="button" accessibilityLabel={t(label)} accessibilityState={{ disabled: !!off, busy: !!busy }} testID={testID}
       disabled={off} onPress={onPress}
       style={({ pressed }) => [s.btn, small && { paddingHorizontal: 12, flex: 1 },
         sec && { backgroundColor: 'transparent' }, bad && { backgroundColor: 'transparent', borderColor: C.bad },
@@ -104,13 +130,16 @@ export function Btn({ label, onPress, kind = 'primary', icon, disabled, busy, sm
   );
 }
 
-export const Chip = ({ label, on, onPress, icon, testID }) => (
-  <Pressable accessibilityRole="button" accessibilityState={{ selected: !!on }} accessibilityLabel={label} testID={testID} onPress={onPress}
-    style={[s.chip, on && { backgroundColor: C.brand, borderColor: C.brand }]}>
-    {icon ? <Feather name={icon} size={14} color={on ? '#fff' : C.text} /> : null}
-    <Text style={{ fontFamily: F.uiSB, fontSize: 13, color: on ? '#fff' : C.text }}>{label}</Text>
-  </Pressable>
-);
+export const Chip = ({ label, on, onPress, icon, testID, raw }) => {
+  const { t } = useLang();
+  return (
+    <Pressable accessibilityRole="button" accessibilityState={{ selected: !!on }} accessibilityLabel={raw ? label : t(label)} testID={testID} onPress={onPress}
+      style={[s.chip, on && { backgroundColor: C.brand, borderColor: C.brand }]}>
+      {icon ? <Feather name={icon} size={14} color={on ? '#fff' : C.text} /> : null}
+      <Text style={{ fontFamily: F.uiSB, fontSize: 13, color: on ? '#fff' : C.text }}>{label}</Text>
+    </Pressable>
+  );
+};
 export const Chips = ({ children }) => <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>{children}</View>;
 
 const TONE = { good: [C.goodBg, C.good], warn: [C.warnBg, C.warn], bad: [C.badBg, C.bad], info: [C.infoBg, C.info], mute: [C.bg, C.muted] };
@@ -128,11 +157,12 @@ export const Note = ({ tone = 'info', icon = 'info', children }) => (
   </View>
 );
 
-export function Field({ label, error, hint, multiline, style, inputRef, testID, ...p }) {
+export function Field({ label, error, hint, multiline, style, inputRef, testID, placeholder, ...p }) {
+  const { t } = useLang();
   return (
     <View style={{ gap: 4 }}>
       {label ? <Text style={{ fontFamily: F.uiB, fontSize: 13, color: C.text }}>{label}</Text> : null}
-      <TextInput ref={inputRef} testID={testID} accessibilityLabel={label || p.placeholder} multiline={multiline}
+      <TextInput ref={inputRef} testID={testID} accessibilityLabel={t(label || placeholder)} multiline={multiline} placeholder={t(placeholder)}
         placeholderTextColor="#8a9896"
         style={[s.input, multiline && { minHeight: 84, textAlignVertical: 'top' }, error && { borderColor: C.bad }, style]} {...p} />
       {error ? <Text style={{ fontFamily: F.uiB, fontSize: 12.5, color: C.bad }} accessibilityLiveRegion="polite">{error}</Text> : null}
@@ -141,41 +171,80 @@ export function Field({ label, error, hint, multiline, style, inputRef, testID, 
   );
 }
 
-export const Switch = ({ on, onChange, label }) => (
-  // The pressable area is 44 px high (WCAG 2.5.5 target size); the visible track stays 50 x 30.
-  <Pressable accessibilityRole="switch" accessibilityLabel={label} accessibilityState={{ checked: !!on }} onPress={() => onChange(!on)}
-    style={{ minHeight: 44, minWidth: 50, justifyContent: 'center' }}>
-    <View style={[s.switch, on && { backgroundColor: C.good }]}>
-      <View style={[s.knob, on && { left: 23 }]} />
+export const Switch = ({ on, onChange, label }) => {
+  const { t } = useLang();
+  return (
+    // The pressable area is 44 px high (WCAG 2.5.5 target size); the visible track stays 50 x 30.
+    <Pressable accessibilityRole="switch" accessibilityLabel={t(label)} accessibilityState={{ checked: !!on }} onPress={() => onChange(!on)}
+      style={{ minHeight: 44, minWidth: 50, justifyContent: 'center' }}>
+      <View style={[s.switch, on && { backgroundColor: C.good }]}>
+        <View style={[s.knob, on && { left: 23 }]} />
+      </View>
+    </Pressable>
+  );
+};
+
+export const Seg = ({ options, value, onChange }) => {
+  const { t } = useLang();
+  return (
+    <View style={s.seg}>
+      {options.map(([k, label]) => (
+        <Pressable key={k} accessibilityRole="button" accessibilityState={{ selected: value === k }} accessibilityLabel={t(label)} onPress={() => onChange(k)}
+          style={[s.segBtn, value === k && { backgroundColor: C.brand }]}>
+          <Text style={{ fontFamily: F.uiB, color: value === k ? '#fff' : C.muted }}>{label}</Text>
+        </Pressable>
+      ))}
     </View>
-  </Pressable>
-);
+  );
+};
 
-export const Seg = ({ options, value, onChange }) => (
-  <View style={s.seg}>
-    {options.map(([k, label]) => (
-      <Pressable key={k} accessibilityRole="button" accessibilityState={{ selected: value === k }} accessibilityLabel={label} onPress={() => onChange(k)}
-        style={[s.segBtn, value === k && { backgroundColor: C.brand }]}>
-        <Text style={{ fontFamily: F.uiB, color: value === k ? '#fff' : C.muted }}>{label}</Text>
-      </Pressable>
-    ))}
-  </View>
-);
+export const Radio = ({ label, on, onPress, style }) => {
+  const { t } = useLang();
+  return (
+    <Pressable accessibilityRole="radio" accessibilityState={{ selected: !!on }} accessibilityLabel={t(label)} onPress={onPress}
+      style={[s.radio, on && { borderColor: C.brand, backgroundColor: C.infoBg }, style]}>
+      <View style={[s.radioDot, on && { borderColor: C.brand }]}>{on ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: C.brand }} /> : null}</View>
+      <Text style={{ fontFamily: F.uiB, fontSize: 14, color: C.text, flexShrink: 1 }}>{label}</Text>
+    </Pressable>
+  );
+};
 
-export const Radio = ({ label, on, onPress, style }) => (
-  <Pressable accessibilityRole="radio" accessibilityState={{ selected: !!on }} accessibilityLabel={label} onPress={onPress}
-    style={[s.radio, on && { borderColor: C.brand, backgroundColor: C.infoBg }, style]}>
-    <View style={[s.radioDot, on && { borderColor: C.brand }]}>{on ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: C.brand }} /> : null}</View>
-    <Text style={{ fontFamily: F.uiB, fontSize: 14, color: C.text, flexShrink: 1 }}>{label}</Text>
-  </Pressable>
-);
+export const Check = ({ label, on, onPress }) => {
+  const { t } = useLang();
+  return (
+    <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: !!on }} accessibilityLabel={t(label)} onPress={onPress} style={s.chk}>
+      <View style={[s.box, on && { backgroundColor: C.good, borderColor: C.good }]}>{on ? <Feather name="check" size={13} color="#fff" /> : null}</View>
+      <Text style={{ fontFamily: F.uiB, fontSize: 13.5, color: C.text, flex: 1 }}>{label}</Text>
+    </Pressable>
+  );
+};
 
-export const Check = ({ label, on, onPress }) => (
-  <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: !!on }} accessibilityLabel={label} onPress={onPress} style={s.chk}>
-    <View style={[s.box, on && { backgroundColor: C.good, borderColor: C.good }]}>{on ? <Feather name="check" size={13} color="#fff" /> : null}</View>
-    <Text style={{ fontFamily: F.uiB, fontSize: 13.5, color: C.text, flex: 1 }}>{label}</Text>
-  </Pressable>
-);
+/* ---------- language ---------- */
+/** English / සිංහල / தமிழ். Each name is written in its own script so a person can find their language without reading English. */
+export function LangPicker() {
+  const { lang, setLang } = useLang();
+  return (
+    <View accessibilityRole="radiogroup" style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+      {LANGS.map(([k, name]) => <Chip key={k} raw label={name} on={lang === k} onPress={() => setLang(k)} testID={'lang-' + k} />)}
+    </View>
+  );
+}
+
+/** Globe button for the top bar. Opens a small sheet with the three languages. */
+export function LangButton({ onBrand }) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <>
+      <IconBtn name="globe" label="Language" onBrand={onBrand} onPress={() => setOpen(true)} testID="lang-button" />
+      {open ? (
+        <Sheet title="Language" onClose={() => setOpen(false)}>
+          <LangPicker />
+          <Btn kind="secondary" label="Done" onPress={() => setOpen(false)} testID="lang-done" />
+        </Sheet>
+      ) : null}
+    </>
+  );
+}
 
 /* ---------- display ---------- */
 export const Avatar = ({ name = '', id = 0, size = 46 }) => (
@@ -185,8 +254,9 @@ export const Avatar = ({ name = '', id = 0, size = 46 }) => (
 );
 
 export const Stars = ({ value = 0 }) => {
+  const { t } = useLang();
   const r = Math.round(value);
-  return <Text style={{ color: C.star, letterSpacing: 1 }} accessibilityLabel={`${value} out of 5 stars`}>{'★'.repeat(r) + '☆'.repeat(5 - r)}</Text>;
+  return <Text style={{ color: C.star, letterSpacing: 1 }} accessibilityLabel={t(`${value} out of 5 stars`)}>{'★'.repeat(r) + '☆'.repeat(5 - r)}</Text>;
 };
 
 export const VerPill = ({ verified }) => verified
@@ -209,7 +279,10 @@ export const Empty = ({ title, text, action }) => (
   </View>
 );
 
-export const Loading = () => <View style={{ padding: 40, alignItems: 'center' }}><ActivityIndicator size="large" color={C.brand} accessibilityLabel="Loading" /></View>;
+export const Loading = () => {
+  const { t } = useLang();
+  return <View style={{ padding: 40, alignItems: 'center' }}><ActivityIndicator size="large" color={C.brand} accessibilityLabel={t('Loading')} /></View>;
+};
 
 export const ErrorBox = ({ message, onRetry }) => (
   <View style={[s.card, { borderColor: C.bad }]} accessibilityLiveRegion="polite">
@@ -227,9 +300,10 @@ export const Async = ({ state, children, onRetry }) => {
 };
 
 export function Sheet({ title, onClose, children }) {
+  const { t } = useLang();
   return (
     <Modal transparent animationType="slide" onRequestClose={onClose} visible>
-      <Pressable style={s.sheetbg} onPress={onClose} accessibilityLabel="Close">
+      <Pressable style={s.sheetbg} onPress={onClose} accessibilityLabel={t('Close')}>
         <Pressable style={s.sheet} onPress={() => {}} accessibilityViewIsModal>
           <Text accessibilityRole="header" style={{ fontFamily: F.uiB, fontSize: 16, color: C.text }}>{title}</Text>
           {children}

@@ -13,7 +13,7 @@ The app implements the 17 interfaces of the Milestone 02 high-fidelity prototype
 | | |
 |---|---|
 | Mobile app | React Native with Expo (SDK 57), React Navigation 7 |
-| API | Node.js 20+ with Express 5, JSON over HTTP |
+| API | Node.js 22+ with Express 5, JSON over HTTP |
 | Database | SQLite (better-sqlite3, WAL mode, foreign keys on) |
 | Authentication | Email + password, bcrypt hashes, JWT bearer token (7 days) |
 | Validation | zod schemas on every request body and query |
@@ -37,7 +37,7 @@ gedara-app/
 
 ## 1. Run the API
 
-Requirements: Node.js 20 or newer.
+Requirements: Node.js 22 or newer (the database library ships ready-made binaries; `server/.npmrc` skips the compile step, which fails on Windows PCs without Visual Studio).
 
 ```bash
 cd server
@@ -60,7 +60,7 @@ To start again from clean demo data: `npm run seed` (deletes and recreates the d
 
 ## 2. Run the app
 
-Requirements: Node.js 20+, and either the **Expo Go** app on a phone (same Wi-Fi as the computer), an Android emulator
+Requirements: Node.js 22+, and either the **Expo Go** app on a phone (same Wi-Fi as the computer), an Android emulator
 or iOS simulator, or just a browser.
 
 ```bash
